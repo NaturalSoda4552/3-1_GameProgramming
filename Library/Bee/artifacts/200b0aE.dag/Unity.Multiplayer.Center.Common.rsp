@@ -384,7 +384,6 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
--analyzer:"Assets/03.Prefabs/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll"
 "Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546/Common/AnswerData.cs"
 "Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546/Common/IOnboardingSection.cs"
 "Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546/Common/IOnboardingSectionAnalyticsProvider.cs"

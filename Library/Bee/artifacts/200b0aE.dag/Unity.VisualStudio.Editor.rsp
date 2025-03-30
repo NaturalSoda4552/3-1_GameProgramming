@@ -379,7 +379,6 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
--analyzer:"Assets/03.Prefabs/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll"
 "Library/PackageCache/com.unity.ide.visualstudio@8140e851d83e/Editor/AssemblyInfo.cs"
 "Library/PackageCache/com.unity.ide.visualstudio@8140e851d83e/Editor/AsyncOperation.cs"
 "Library/PackageCache/com.unity.ide.visualstudio@8140e851d83e/Editor/Cli.cs"

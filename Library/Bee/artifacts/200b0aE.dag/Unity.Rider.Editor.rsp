@@ -382,7 +382,6 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
--analyzer:"Assets/03.Prefabs/EffectExamples/Editor/PackageManagerAssembly/PackageManagerAssembly.dll"
 "Library/PackageCache/com.unity.ide.rider@7921be93db40/Rider/Editor/Discovery.cs"
 "Library/PackageCache/com.unity.ide.rider@7921be93db40/Rider/Editor/EditorPluginInterop.cs"
 "Library/PackageCache/com.unity.ide.rider@7921be93db40/Rider/Editor/LoggingLevel.cs"

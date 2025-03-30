@@ -31,6 +31,7 @@ public class BarrelCtrl : MonoBehaviour
                 Quaternion rot = Quaternion.LookRotation(-cp.normal);
                 GameObject boom = Instantiate(BoomEffect, cp.point, rot);
                 Destroy(boom, 1.0f);
+                
                 Destroy(gameObject); 
                 
                 IndirectDamage(transform.position);
