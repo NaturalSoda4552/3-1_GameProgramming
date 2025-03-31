@@ -37,7 +37,14 @@ public class PlayerCtrl : MonoBehaviour
         if (v < 0) anim.CrossFade("RunB", 0.25f);
         if (h > 0) anim.CrossFade("RunR", 0.25f);
         if (h < 0) anim.CrossFade("RunL", 0.25f);
-        if (Input.GetMouseButtonDown(0)) anim.Play("IdleFireSMG");
+        if (Input.GetMouseButtonDown(0) && (h != 0 || v != 0))
+        {
+            anim.CrossFade("RunFireSMG", 0.25f); // ?
+        }
+        else if (Input.GetMouseButtonDown(0) && (h == 0 && v == 0))
+        {
+            anim.Play("IdleFireSMG");
+        }
         
         // Vector3.up 축을 기준으로 turnSpeed만큼의 속도로 회전
         tr.Rotate(Vector3.up * turnSpeed * Time.deltaTime * r);
