@@ -4,6 +4,10 @@ public class BarrelCtrl : MonoBehaviour
 {
     public float radius = 5.0f;
     private Rigidbody rb;
+    
+    public Texture[] textures;
+    private new MeshRenderer renderer;
+    private int textureIndex = 0;
 
     void IndirectDamage(Vector3 pos)
     {
@@ -32,7 +36,8 @@ public class BarrelCtrl : MonoBehaviour
                 GameObject boom = Instantiate(BoomEffect, cp.point, rot);
                 Destroy(boom, 1.0f);
                 
-                Destroy(gameObject); 
+                
+                Destroy(gameObject);
                 
                 IndirectDamage(transform.position);
                 
@@ -43,7 +48,9 @@ public class BarrelCtrl : MonoBehaviour
     
     void Start()
     {
-        
+        renderer = GetComponentInChildren<MeshRenderer>();
+        textureIndex = Random.Range(0, textures.Length);
+        renderer.material.mainTexture = textures[textureIndex];
     }
 
     // Update is called once per frame

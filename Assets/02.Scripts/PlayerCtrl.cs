@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,8 @@ public class PlayerCtrl : MonoBehaviour
 
     public float moveSpeed = 5.0f; // 이동 속도 
     public float turnSpeed = 80.0f; // 회전 속도
+
+    
     void Start()
     {
         tr = GetComponent<Transform>();
@@ -34,6 +37,7 @@ public class PlayerCtrl : MonoBehaviour
         if (v < 0) anim.CrossFade("RunB", 0.25f);
         if (h > 0) anim.CrossFade("RunR", 0.25f);
         if (h < 0) anim.CrossFade("RunL", 0.25f);
+        if (Input.GetMouseButtonDown(0)) anim.Play("IdleFireSMG");
         
         // Vector3.up 축을 기준으로 turnSpeed만큼의 속도로 회전
         tr.Rotate(Vector3.up * turnSpeed * Time.deltaTime * r);
