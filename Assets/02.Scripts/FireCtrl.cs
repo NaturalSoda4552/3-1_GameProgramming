@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
+
 public class FireCtrl : MonoBehaviour
 {
     public GameObject bullet;
@@ -10,7 +12,6 @@ public class FireCtrl : MonoBehaviour
     
     public AudioClip fireSfx;
     private new AudioSource audio;
-    
     
     void Start()
     {

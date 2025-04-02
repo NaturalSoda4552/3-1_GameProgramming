@@ -34,10 +34,9 @@ public class BarrelCtrl : MonoBehaviour
                 ContactPoint cp = coll.GetContact(0);
                 Quaternion rot = Quaternion.LookRotation(-cp.normal);
                 GameObject boom = Instantiate(BoomEffect, cp.point, rot);
-                Destroy(boom, 1.0f);
+                Destroy(boom, 4.0f);
                 
-                
-                Destroy(gameObject);
+                Destroy(gameObject, 3.0f);
                 
                 IndirectDamage(transform.position);
                 

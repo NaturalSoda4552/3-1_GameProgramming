@@ -13,6 +13,12 @@ public class FollowCam : MonoBehaviour
     
     public float targetOffset = 2.0f;
     
+    // SmoothDamp에서 사용할 변수
+    public Vector3 velocity = Vector3.zero; 
+    // velocity = new Vector3.zero;
+    // 반응 속도
+    public float damping = 1.0f;
+    
     void Start()
     {
         camTr = GetComponent<Transform>();
@@ -21,9 +27,14 @@ public class FollowCam : MonoBehaviour
     void LateUpdate()
     {
         // 플레이어의 위치를 기준으로 카메라의 위치 계산
-        camTr.position = targetTr.position
+        Vector3 pos = targetTr.position
                       + (-targetTr.forward * distance)
                       + (Vector3.up * height);
+        
+        camTr.position = Vector3.SmoothDamp(camTr.position, // 시작 위치
+            pos,            // 목표 위치
+            ref velocity,   // 현재 속도
+            damping);       // 목표 위치까지 도달할 시간
         // Camera를 피벗 좌표를 향해 회전
         camTr.LookAt(targetTr.position + (targetTr.up * targetOffset));
     }
