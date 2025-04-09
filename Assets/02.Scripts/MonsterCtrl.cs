@@ -10,80 +10,104 @@ public class MonsterCtrl : MonoBehaviour
     public float traceDist = 10.0f;
     public float attackDist = 2.0f;
     
+    private float monsterHp = 100.0f;
+    
     private Animator anim;
-
+    
     public enum State
     {
-        IDLE, WALK, ATTACK
+        IDLE, WALK, ATTACK, DIE, PLAYERDIE
     }
     
     public State state = State.IDLE;
     
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    // 한 번만 실행하기 위한 플래그
+    private bool playerDieTriggered = false;
+    private bool isDead = false; // DIE 상태 관련
+
     void Start()
     {
         playerTr = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         agent = GetComponent<NavMeshAgent>();
-
         anim = GetComponent<Animator>();
-        
         
         agent.isStopped = true;
         anim.SetBool("IsTrace", false);
         anim.SetBool("IsAttack", false);
-    }
-    
-    // 공격당할 시 경직 변수
-    private bool isStunned = false;
-
-    // Update is called once per frame
-    void Update()
-    {
         
-        if (isStunned) return;
-        StartCoroutine(MonsterState());
-        StartCoroutine(MonsterAction());
+        // 지속적인 상태 업데이트 코루틴 실행
+        StartCoroutine(MonsterBehaviour());
+    }
+
+    IEnumerator MonsterBehaviour()
+    {
+        while (true)
+        {
+            // 상태가 DIE 또는 PLAYERDIE일 경우 한 번만 트리거 처리
+            if (state == State.DIE || state == State.PLAYERDIE)
+            {
+                if (!isDead)
+                {
+                    isDead = true;
+                    yield return new WaitForSeconds(0.3f);
+                    ExecuteActionForState(state);
+                }
+                yield break; // 상태가 죽으면 코루틴 종료
+            }
+            else
+            {
+                // 일반 상태 업데이트
+                yield return MonsterState();
+                yield return MonsterAction();
+            }
+        }
     }
 
     IEnumerator MonsterState()
     {
-        // 0.3초 동안 대기(정지)하는 동안 메시지 루프로 제어권을 양보
         yield return new WaitForSeconds(0.3f);
         
         float distance = Vector3.Distance(playerTr.position, transform.position);
 
-        // 추적 거리보다 작으면 추적 시작
-        if (distance < traceDist)
+        if (monsterHp <= 0)
         {
-            state = State.WALK;
-            
-            anim.SetBool("IsTrace", true);
-            agent.isStopped = false;
-            agent.SetDestination(playerTr.position);
-            
-            if (distance < attackDist)
-            {
-                state = State.ATTACK;
-                
-                anim.SetBool("IsAttack", true);
-            }
+            state = State.DIE;
         }
         else
         {
-            state = State.IDLE;
-            
-            agent.isStopped = true;
-            anim.SetBool("IsTrace", false);
-            anim.SetBool("IsAttack", false);
+            if (distance < traceDist)
+            {
+                state = State.WALK;
+                anim.SetBool("IsTrace", true);
+                agent.isStopped = false;
+                agent.SetDestination(playerTr.position);
+
+                if (distance < attackDist)
+                {
+                    state = State.ATTACK;
+                    anim.SetBool("IsAttack", true);
+                }
+            }
+            else
+            {
+                state = State.IDLE;
+                agent.isStopped = true;
+                anim.SetBool("IsTrace", false);
+                anim.SetBool("IsAttack", false);
+            }
         }
     }
 
     IEnumerator MonsterAction()
     {
-        // 0.3초 동안 대기(정지)하는 동안 메시지 루프로 제어권을 양보
         yield return new WaitForSeconds(0.3f);
+        ExecuteActionForState(state);
+    }
 
-        switch (state)
+    // 상태에 따른 액션 실행을 한 곳에서 처리
+    void ExecuteActionForState(State currentState)
+    {
+        switch (currentState)
         {
             case State.IDLE:
                 agent.isStopped = true;
@@ -98,31 +122,45 @@ public class MonsterCtrl : MonoBehaviour
                 agent.isStopped = false;
                 anim.SetBool("IsAttack", true);
                 break;
+            case State.DIE:
+                agent.isStopped = true;
+                anim.SetTrigger("Die");
+                GetComponent<Collider>().enabled = false;
+                break;
+            case State.PLAYERDIE:
+                // 이미 트리거 된 적이 없다면 실행
+                if (!playerDieTriggered)
+                {
+                    playerDieTriggered = true;
+                    agent.isStopped = true;
+                    anim.SetTrigger("PlayerDie");
+                    GetComponent<Collider>().enabled = false;
+                }
+                break;
         }
     }
-    
     
     void OnCollisionEnter(Collision coll)
     {
-        // 충돌한 오브젝트 태그가 'Bullet' 이라면
         if (coll.collider.CompareTag("Bullet"))
         {
             anim.SetTrigger("Hit");
-            
+            monsterHp -= 10;            
             Destroy(coll.gameObject);
-            
-            StartCoroutine(HitStun(1f));
         }
     }
-
-    IEnumerator HitStun(float duration) 
+    
+    void OnEnable()
     {
-        isStunned = true;
-        agent.isStopped = true; 
-        
-        yield return new WaitForSeconds(duration);
-        
-        isStunned = false;
+        PlayerCtrl.OnPlayerDie += this.OnPlayerDie;
+    }
+    void OnDisable()
+    {
+        PlayerCtrl.OnPlayerDie -= this.OnPlayerDie;
     }
     
+    void OnPlayerDie()
+    {
+        state = State.PLAYERDIE;
+    }
 }

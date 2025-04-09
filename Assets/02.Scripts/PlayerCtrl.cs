@@ -10,6 +10,11 @@ public class PlayerCtrl : MonoBehaviour
     public float moveSpeed = 5.0f; // 이동 속도 
     public float turnSpeed = 80.0f; // 회전 속도
 
+    private readonly float initHp = 100.0f;
+    public float currHp;
+    
+    public delegate void PlayerDieHandler();
+    public static event PlayerDieHandler OnPlayerDie;
     
     void Start()
     {
@@ -17,6 +22,8 @@ public class PlayerCtrl : MonoBehaviour
         anim = GetComponent<Animation>();
         
         anim.Play("Idle");
+        
+        currHp = initHp;
     }
 
     // Update is called once per frame
@@ -48,5 +55,27 @@ public class PlayerCtrl : MonoBehaviour
         
         // Vector3.up 축을 기준으로 turnSpeed만큼의 속도로 회전
         tr.Rotate(Vector3.up * turnSpeed * Time.deltaTime * r);
+
+        // 플레이어 사망 처리
+        if (currHp <= 0)
+        {
+            PlayerDie(); // 몬스터에게 알림
+            OnPlayerDie(); // 이벤트 방식 병행 처리
+        }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Punch"))
+        {
+            currHp -= 10;
+            Debug.Log(currHp);
+        }
+    }
+    void PlayerDie(){
+        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
+        foreach (GameObject monster in monsters) {
+            monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
+        }
     }
 }

@@ -419,7 +419,7 @@ ModelImporter:
     second: C4D Animation Take
   - first:
       74: 7400002
-    second: idle
+    second: die (1)
   - first:
       74: 7400004
     second: walk
@@ -482,7 +482,9 @@ ModelImporter:
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
-    extraExposedTransformPaths: []
+    extraExposedTransformPaths:
+    - hip/belly/L_arm/L_elbow/L_wrist
+    - hip/belly/R_arm/R_elbow/R_wrist
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
@@ -1144,7 +1146,7 @@ ModelImporter:
       loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
-      loopBlendPositionY: 0
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
