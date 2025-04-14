@@ -9,8 +9,6 @@ public class UIManager : MonoBehaviour
     public Button optionButton;
     public Button shopButton;
 
-    private UnityAction action;
-
     void Start()
     {
         
