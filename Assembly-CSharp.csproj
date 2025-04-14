@@ -61,6 +61,7 @@
     <Compile Include="Assets/03.Prefabs/EffectExamples/Shared/Scripts/ParticleExamples.cs" />
     <Compile Include="Assets/03.Prefabs/EffectExamples/Shared/Scripts/DecalDestroyer.cs" />
     <Compile Include="Assets/02.Scripts/BarrelCtrl.cs" />
+    <Compile Include="Assets/02.Scripts/UIManager.cs" />
     <None Include="Assets/03.Prefabs/EffectExamples/Shared/Shaders/SurfaceShader_VC.shader" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/6000.0.41f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
@@ -862,6 +863,9 @@
     </Reference>
     <Reference Include="Unity.Postprocessing.Runtime">
       <HintPath>/Users/a_ggang_452/My project (1)/Library/ScriptAssemblies/Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>/Users/a_ggang_452/My project (1)/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Performance.Profile-Analyzer.Editor">
       <HintPath>/Users/a_ggang_452/My project (1)/Library/ScriptAssemblies/Unity.Performance.Profile-Analyzer.Editor.dll</HintPath>
