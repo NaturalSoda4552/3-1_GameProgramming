@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class PlayerCtrl : MonoBehaviour
 {
@@ -10,72 +11,96 @@ public class PlayerCtrl : MonoBehaviour
     public float moveSpeed = 5.0f; // 이동 속도 
     public float turnSpeed = 80.0f; // 회전 속도
 
-    private readonly float initHp = 100.0f;
-    public float currHp;
+    private readonly float initHp = 100.0f; // 초기화 할 체력
+    public float currHp; // 현재 체력
+    private Image hpBar;
     
     public delegate void PlayerDieHandler();
-    public static event PlayerDieHandler OnPlayerDie;
+    public static event PlayerDieHandler OnPlayerDie; // 이벤트 선언
+    
+    public bool isDie = false; // 플레이어 사망 플래그
+    
+    private GameObject HpScorePanel; // hp&score 패널 오브젝트
     
     void Start()
     {
+        // 컴포넌트 캐싱 (private: 자기 자신)
         tr = GetComponent<Transform>();
         anim = GetComponent<Animation>();
         
-        anim.Play("Idle");
+        // 초기 설정
+        anim.Play("Idle"); // idle 애니메이션 재생
+        currHp = initHp; // 체력 초기화
         
-        currHp = initHp;
+        // Hpbar 연결
+        hpBar = GameObject.FindGameObjectWithTag("hpBar")?.GetComponent<Image>();
+        HpScorePanel = GameObject.FindGameObjectWithTag("HpAndScorePanel");
+        HpScorePanel.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        float r = Input.GetAxis("Mouse X");
+        // 1. 키보드 입력
+        float v = Input.GetAxis("Vertical"); // W/S
+        float h = Input.GetAxis("Horizontal"); // A/D 
+        float r = Input.GetAxis("Mouse X"); // 마우스 가로 이동
         
-        // 전후좌우 이동 방향 벡터 계산
-        Vector3 moveDir = (Vector3.forward * v) + (Vector3.right * h);
-        // Translate(이동 방향 * 속력 * Time.deltaTime)
+        // 2. 이동 처리
+        // 2-1. 이동 방향
+        Vector3 moveDir = (Vector3.forward * v) + (Vector3.right * h); 
+        // 2-2. 실제 이동, Translate(이동 방향 * 속력 * Time.deltaTime)
         tr.Translate(moveDir.normalized * moveSpeed * Time.deltaTime);
-        
-        // 이동 애니메이션
-        if (h == 0 && v == 0) anim.CrossFade("Idle", 0.25f);
-        if (v > 0) anim.CrossFade("RunF", 0.25f);
-        if (v < 0) anim.CrossFade("RunB", 0.25f);
-        if (h > 0) anim.CrossFade("RunR", 0.25f);
-        if (h < 0) anim.CrossFade("RunL", 0.25f);
-        if (Input.GetMouseButtonDown(0) && (h != 0 || v != 0))
-        {
-            anim.CrossFade("RunFireSMG", 0.25f); // ?
-        }
-        else if (Input.GetMouseButtonDown(0) && (h == 0 && v == 0))
-        {
-            anim.Play("IdleFireSMG");
-        }
-        
-        // Vector3.up 축을 기준으로 turnSpeed만큼의 속도로 회전
+        // 2-3. 시점 이동, Vector3.up 축을 기준으로 turnSpeed만큼의 속도로 회전
         tr.Rotate(Vector3.up * turnSpeed * Time.deltaTime * r);
-
-        // 플레이어 사망 처리
-        if (currHp <= 0)
-        {
-            PlayerDie(); // 몬스터에게 알림
-            OnPlayerDie(); // 이벤트 방식 병행 처리
-        }
+        
+        // 3. 이동 애니메이션
+        PlayerAnim(h, v);
     }
-
-    void OnTriggerEnter(Collider other)
+    void PlayerAnim(float h, float v)
     {
-        if (other.CompareTag("Punch"))
+        // 키보드 입력값을 기준으로 동작할 애니메이션 수행
+        if (v >= 0.1f) 
+            anim.CrossFade("RunF", 0.25f);  // 전진 애니메이션 실행
+        else if (v <= -0.1f) 
+            anim.CrossFade("RunB", 0.25f);  // 후진 애니메이션 실행
+        else if (h >= 0.1f) 
+            anim.CrossFade("RunR", 0.25f);  // 오른쪽 이동 애니메이션 실행
+        else if (h <= -0.1f) 
+            anim.CrossFade("RunL", 0.25f);  // 왼쪽 이동 애니메이션 실행
+        else if (Input.GetMouseButtonDown(0) && (h == 0 && v == 0))
+            anim.Play("IdleFireSMG"); // 정지 사격 애니메이션
+        else 
+            anim.CrossFade("Idle", 0.25f);   // 정지 시 Idle 애니메이션 실행
+    }
+
+    // 충돌 처리
+    void OnTriggerEnter(Collider coll)
+    {
+        // 몬스터의 punch 태그면 Player의 HP 차감
+        if (currHp >= 0.0f && coll.CompareTag("Punch"))
         {
-            currHp -= 10;
-            Debug.Log(currHp);
+            currHp -= 10.0f; // 10씩 감소
+            hpBar.fillAmount = currHp / initHp;
+            
+            // Player의 hp가 0 이하면 사망 처리
+            if (currHp <= 0.0f && isDie == false)
+            {
+                isDie = true; // 사망 플래그 true
+                PlayerDie(); // 플레이어 사망 함수 호출
+            }
         }
     }
-    void PlayerDie(){
-        GameObject[] monsters = GameObject.FindGameObjectsWithTag("Monster");
-        foreach (GameObject monster in monsters) {
-            monster.SendMessage("OnPlayerDie", SendMessageOptions.DontRequireReceiver);
-        }
+    
+    // Player 사망 처리
+    void PlayerDie()
+    {
+        // Debug.Log("Player Die !");
+
+        GameManager.instance.IsGameOver = true;
+        
+        // 주인공 사망 이벤트 호출(발생)
+        OnPlayerDie();
     }
+    
 }

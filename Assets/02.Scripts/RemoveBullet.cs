@@ -2,11 +2,12 @@ using UnityEngine;
 
 public class RemoveBullet : MonoBehaviour
 {
-    public GameObject sparkEffect; // spark 효과를 미리 가져오기 (public)
-    // 충돌 감지 함수
+    public GameObject sparkEffect; // spark 효과 가져오기 (public)
+    
+    // 충돌 처리
     void OnCollisionEnter(Collision coll)
     {
-        // 충돌한 오브젝트 태그가 'Bullet' 이라면
+        // 충돌한 오브젝트 태그가 'Bullet' 이면
         if (coll.collider.CompareTag("Bullet"))
         {
             // 충돌 지점을 cp 가져오기
@@ -20,17 +21,5 @@ public class RemoveBullet : MonoBehaviour
             // Bullet 오브젝트 삭제 (즉시)
             Destroy(coll.gameObject);
         }
-    }
-    
-    
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

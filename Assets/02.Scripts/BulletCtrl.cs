@@ -13,10 +13,4 @@ public class BulletCtrl : MonoBehaviour
 
         rb.AddForce(transform.forward * force); // 앞방향으로 force만큼 힘 더하기
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

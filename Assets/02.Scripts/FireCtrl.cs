@@ -9,14 +9,14 @@ public class FireCtrl : MonoBehaviour
     public GameObject bullet; // 총알 프리팹
     public Transform firePos; // 총구 위치 tr
     
-    private MeshRenderer muzzleFlash; // 섬광 효과 MeshRenderer
-    
     public AudioClip fireSfx; // 총알 발사 사운드 클립
-    private new AudioSource audio; // 소리를 재생할 AudioSource 변수
+    
+    private MeshRenderer muzzleFlash; // 섬광 효과 MeshRenderer
+    private AudioSource audio; // 소리를 재생할 AudioSource 변수
     
     void Start()
     {
-        // 총구 아래 자식 오브젝트 중 MeshRenderer를 참조
+        // 총구 오브젝트의 자식 오브젝트 중 MeshRenderer를 참조
         muzzleFlash = firePos.GetComponentInChildren<MeshRenderer>();
         // 시작 시 화염 비활성화
         muzzleFlash.enabled = false;
@@ -38,7 +38,7 @@ public class FireCtrl : MonoBehaviour
         // 코루틴으로 ShowMuzzleFlash() 함수 호출
         StartCoroutine(ShowMuzzleFlash());
         // 발사 사운드 출력 (볼륨 1.0)
-        audio.PlayOneShot(fireSfx, 1.0f);
+        audio.PlayOneShot(fireSfx, 0.5f);
     }
     
     // 총구 화염 효과를 출력하는 코루틴 함수
@@ -59,10 +59,10 @@ public class FireCtrl : MonoBehaviour
 
         // MuzzleFlash 활성화
         muzzleFlash.enabled = true;
-
+        
         // 0.2초 동안 대기(정지)하는 동안 메시지 루프로 제어권을 양보
         yield return new WaitForSeconds(0.2f);
-
+        
         // 화염 효과 비활성화
         muzzleFlash.enabled = false;
     }

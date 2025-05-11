@@ -8,6 +8,9 @@ TagManager:
   - Barrel
   - Punch
   - Monster
+  - hpBar
+  - Panel
+  - HpAndScorePanel
   layers:
   - Default
   - TransparentFX
